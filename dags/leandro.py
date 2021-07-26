@@ -20,8 +20,3 @@ with DAG ("minha_dagzinha", start_date=datetime(2021,1,1),
             task_id="extrai_dados_"
             python_callabable=_extrai_dados
         )
-
-
-
-
-        [_extrai_dados_mongo,_extrai_dados_ibge] >> []
