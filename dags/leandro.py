@@ -22,7 +22,8 @@ default_args = {
     "email_on_failure": False,
     "email_on_retry": False,
     "retries": 1,
-    "retry_delay": timedelta(minutes=5),
+    "retry_delay": timedelta(minutes=5)
+    }
 
 #definindo as funções python utilizadas nas tasks:
 
@@ -50,12 +51,14 @@ def _extrai_dados_ibge():
     df_ibge.columns = ['id_microrregiao', 'microrregiao', 'mesorregiao', 'UF', 'regiao']
     df_ibge.to_csv('/tmp/ibge.csv', index=False, encoding = 'utf-8', sep= ';')
 
+
 def _data_to_s3(filename):
     s3_client = boto3.client('s3',
         aws_access_key_id=aws_access_key_id,
         aws_secret_access_key = aws_access_key_secret)
     
     s3_client.upload_file(filename,"datalake-114855355396",filename[5:])
+
 
 def _data_to_rds(filename):
     conn = create_engine(
@@ -74,12 +77,12 @@ def _data_to_rds(filename):
 #definindo a dag:
 
 with DAG ("_extract_import_",
-            description="pega os dados da API IBGE e do Mongo do cliente, insere arquivos no DW e s3"
-            default_args=default_args,
+            description="pega os dados da API IBGE e do Mongo do cliente, insere arquivos no DW e s3",
+            default_args = default_args,
             start_date=datetime(2021,1,1),
             schedule_interval=None,
             catchup=False) as dag:
-        
+
         #Definindo as tasks:
 
         extrai_dados_mongo = PythonOperator(
@@ -108,7 +111,6 @@ with DAG ("_extract_import_",
             task_id='data_to_s3_ibge',
             python_callable= _data_to_s3,
             op_kwargs = {'filename':'/tmp/ibge.csv'},
-            dag=dag
         )
 
         data_to_s3_mongo = PythonOperator(
