@@ -25,6 +25,8 @@ sftp-config.json
 # Python
 __pycache__
 
+senhas_aws
+
 .vscode/
 
 microdados_enade_2019*

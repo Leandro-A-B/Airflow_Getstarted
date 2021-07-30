@@ -57,6 +57,8 @@ services:
 
     scheduler:
         image: neylsoncrepalde/airflow-docker:2.0.0-pymongo
+        stdin_open: true # docker run -i
+        tty: true        # docker run -t
         restart: always
         depends_on:
             - webserver
